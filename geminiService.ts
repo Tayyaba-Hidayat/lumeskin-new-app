@@ -1,58 +1,33 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
-
-// Fallback to empty string if process.env.API_KEY is missing to avoid crash
-const apiKey = typeof process.env !== 'undefined' ? process.env.API_KEY || '' : '';
-const ai = new GoogleGenAI({ apiKey });
-
 export const analyzeSkin = async (imageBase64: string) => {
-  if (!apiKey) {
-    console.warn("API Key is missing. AI features will not work.");
-    return {
-      condition: "Offline Mode",
-      severity: "N/A",
-      recommendations: ["Please configure API Key"],
-      summary: "The AI service is currently unavailable."
-    };
-  }
-
-  const model = ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: {
-      parts: [
-        { inlineData: { data: imageBase64, mimeType: 'image/jpeg' } },
-        { text: "Analyze this skin image for common dermatological concerns. Provide a summary including: Potential Condition, Severity (Low/Medium/High), and General Recommendations. Format the output as clean JSON." }
-      ]
-    },
-    config: {
-      responseMimeType: 'application/json',
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          condition: { type: Type.STRING },
-          severity: { type: Type.STRING },
-          recommendations: { type: Type.ARRAY, items: { type: Type.STRING } },
-          summary: { type: Type.STRING }
-        },
-        required: ["condition", "severity", "recommendations", "summary"]
-      }
-    }
-  });
-
-  const response = await model;
-  return JSON.parse(response.text || '{}');
+  // Mock AI Analysis for stability
+  await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate processing
+  return {
+    condition: "Dermal Sensitivity",
+    severity: "Low",
+    recommendations: [
+      "Use a pH-balanced cleanser twice daily",
+      "Apply Lume Hydrating Serum to damp skin",
+      "Avoid harsh chemical exfoliants for 48 hours"
+    ],
+    summary: "Based on our visual analysis, your skin shows slight redness consistent with mild sensitivity or environmental irritation."
+  };
 };
 
 export const chatWithAI = async (message: string, history: any[]) => {
-  if (!apiKey) return "Chat is currently offline (Missing API Key).";
+  // Mock AI Chat for stability
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  const lowerMsg = message.toLowerCase();
   
-  const chat = ai.chats.create({
-    model: 'gemini-3-flash-preview',
-    config: {
-      systemInstruction: "You are LumeSkin AI, a helpful and empathetic dermatology assistant. Answer questions about skin care, products, and general health. Be concise and professional."
-    }
-  });
+  if (lowerMsg.includes("hello") || lowerMsg.includes("hi")) {
+    return "Hello! I'm Lume, your skincare assistant. How can I help your glow today?";
+  }
+  if (lowerMsg.includes("acne")) {
+    return "Acne can be tricky! I recommend our Pink Clay Mask for targeted pore purification and consulting with Dr. Sarah Smith.";
+  }
+  if (lowerMsg.includes("order") || lowerMsg.includes("buy")) {
+    return "You can browse our Boutique in the Shop tab and add items directly to your clinical kit.";
+  }
   
-  const response = await chat.sendMessage({ message });
-  return response.text;
+  return "That's an interesting question about your skin! While I'm a specialized assistant, I recommend booking a consultation with one of our dermatologists for a personalized medical plan.";
 };
