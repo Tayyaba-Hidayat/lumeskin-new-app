@@ -1,0 +1,8 @@
+{
+  "name": "LumeSkin - AI Dermatology Platform",
+  "description": "A comprehensive AI-powered dermatology platform for patients, doctors, admins, and staff, featuring skin analysis, product shop, and appointment management in a soft white and baby pink aesthetic.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
