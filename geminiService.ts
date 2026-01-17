@@ -1,9 +1,21 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Fallback to empty string if process.env.API_KEY is missing to avoid crash
+const apiKey = typeof process.env !== 'undefined' ? process.env.API_KEY || '' : '';
+const ai = new GoogleGenAI({ apiKey });
 
 export const analyzeSkin = async (imageBase64: string) => {
+  if (!apiKey) {
+    console.warn("API Key is missing. AI features will not work.");
+    return {
+      condition: "Offline Mode",
+      severity: "N/A",
+      recommendations: ["Please configure API Key"],
+      summary: "The AI service is currently unavailable."
+    };
+  }
+
   const model = ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: {
@@ -32,6 +44,8 @@ export const analyzeSkin = async (imageBase64: string) => {
 };
 
 export const chatWithAI = async (message: string, history: any[]) => {
+  if (!apiKey) return "Chat is currently offline (Missing API Key).";
+  
   const chat = ai.chats.create({
     model: 'gemini-3-flash-preview',
     config: {

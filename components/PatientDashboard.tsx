@@ -109,18 +109,6 @@ const PatientDashboard: React.FC<PatientProps> = ({
                 <ActionButton icon={<MessageSquare className="text-purple-500" />} label="AI Chatbot" color="bg-purple-50" onClick={() => setView('chat')} />
               </div>
             </section>
-
-            <section>
-               <h3 className="font-black text-gray-800 mb-4 text-xs uppercase tracking-widest">Today's Deals</h3>
-               <div className="bg-pink-50 p-5 rounded-[32px] flex items-center gap-4 border border-pink-100">
-                  <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-pink-500"><Heart fill="currentColor" size={20}/></div>
-                  <div className="flex-1">
-                    <p className="text-xs font-black text-gray-800">Summer Protection Pack</p>
-                    <p className="text-[10px] text-pink-400">Claim your 15% discount now.</p>
-                  </div>
-                  <button onClick={() => setView('shop')} className="p-2 bg-white text-pink-500 rounded-full shadow-sm"><ChevronRight size={16}/></button>
-               </div>
-            </section>
           </div>
         )}
 
@@ -149,7 +137,7 @@ const PatientDashboard: React.FC<PatientProps> = ({
                   <div className={`px-3 py-1 rounded-full inline-block text-[10px] font-black uppercase mb-4 ${analysisResult.severity === 'High' ? 'bg-red-100 text-red-500' : 'bg-green-100 text-green-500'}`}>
                     {analysisResult.severity} RISK LEVEL
                   </div>
-                  <p className="text-sm text-gray-600 italic leading-relaxed mb-6 border-l-4 border-pink-500 pl-4">{analysisResult.summary}</p>
+                  <p className="text-sm text-gray-600 mt-4 mb-6 italic leading-relaxed mb-6 border-l-4 border-pink-500 pl-4">{analysisResult.summary}</p>
                   <div className="space-y-3">
                     {analysisResult.recommendations.map((r: string, i: number) => (
                       <div key={i} className="flex gap-3 text-xs text-gray-700 bg-pink-50/50 p-4 rounded-2xl border border-pink-100/50">
@@ -188,7 +176,6 @@ const PatientDashboard: React.FC<PatientProps> = ({
                     <p className="text-[10px] text-gray-400 mb-2">{p.category}</p>
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-black text-pink-500">${p.price}</span>
-                      <div className="flex items-center gap-0.5 text-yellow-400"><Star size={10} fill="currentColor"/> <span className="text-[10px] text-gray-500 font-bold">{p.rating}</span></div>
                     </div>
                   </div>
                 </div>
@@ -215,40 +202,36 @@ const PatientDashboard: React.FC<PatientProps> = ({
               </div>
             ) : (
               <div className="space-y-6">
-                <button onClick={() => setBookingDoc(null)} className="flex items-center gap-2 text-pink-400 text-[10px] font-black uppercase tracking-widest"><ArrowLeft size={14}/> BACK TO CLINICIANS</button>
+                <button onClick={() => setBookingDoc(null)} className="flex items-center gap-2 text-pink-400 text-[10px] font-black uppercase tracking-widest"><ArrowLeft size={14}/> Specialist List</button>
                 <div className="text-center p-6 bg-pink-50 rounded-[40px] border border-pink-100">
                   <img src={bookingDoc.image} className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-xl object-cover" />
                   <h3 className="text-xl font-black text-gray-800">{bookingDoc.name}</h3>
                   <p className="text-[10px] text-pink-500 font-black uppercase mb-4 tracking-widest">{bookingDoc.specialty}</p>
-                  <p className="text-[11px] text-gray-500 px-6 italic leading-relaxed">{bookingDoc.bio}</p>
                 </div>
-                <div className="space-y-4">
-                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Confirm Slot</p>
-                   <div className="grid grid-cols-3 gap-3">
-                      {bookingDoc.availability.map((t: string) => (
-                        <button 
-                          key={t}
-                          onClick={() => {
-                            onAddAppointment({
-                              id: Math.random().toString(),
-                              patientId: user.id,
-                              patientName: user.name,
-                              doctorId: bookingDoc.id,
-                              doctorName: bookingDoc.name,
-                              date: 'June 25',
-                              time: t,
-                              status: 'CONFIRMED'
-                            });
-                            alert(`Success! Consultation booked with ${bookingDoc.name} at ${t}`);
-                            setView('home');
-                            setBookingDoc(null);
-                          }}
-                          className="py-4 rounded-2xl bg-white border-2 border-pink-50 text-[10px] font-black text-pink-500 active:bg-pink-500 active:text-white transition-all shadow-sm"
-                        >
-                          {t}
-                        </button>
-                      ))}
-                   </div>
+                <div className="grid grid-cols-3 gap-3">
+                  {bookingDoc.availability.map((t: string) => (
+                    <button 
+                      key={t}
+                      onClick={() => {
+                        onAddAppointment({
+                          id: Math.random().toString(),
+                          patientId: user.id,
+                          patientName: user.name,
+                          doctorId: bookingDoc.id,
+                          doctorName: bookingDoc.name,
+                          date: 'June 25',
+                          time: t,
+                          status: 'CONFIRMED'
+                        });
+                        alert(`Booked with ${bookingDoc.name} at ${t}`);
+                        setView('home');
+                        setBookingDoc(null);
+                      }}
+                      className="py-4 rounded-2xl bg-white border-2 border-pink-50 text-[10px] font-black text-pink-500 active:bg-pink-500 active:text-white transition-all shadow-sm"
+                    >
+                      {t}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
@@ -258,15 +241,6 @@ const PatientDashboard: React.FC<PatientProps> = ({
         {view === 'chat' && (
           <div className="h-full flex flex-col animate-in slide-in-from-right duration-300">
              <div className="flex-1 overflow-y-auto space-y-4 py-4 pr-1">
-                {chatHistory.length === 0 && (
-                  <div className="text-center py-20 opacity-40">
-                    <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
-                        <MessageSquare size={32} className="text-pink-500" />
-                    </div>
-                    <p className="text-xs font-black uppercase text-pink-500 tracking-widest">Lume AI Ready</p>
-                    <p className="text-[10px] text-gray-400 mt-2">Ask about items, skin types, or symptoms.</p>
-                  </div>
-                )}
                 {chatHistory.map((c, i) => (
                   <div key={i} className={`flex ${c.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[85%] px-5 py-3 rounded-[24px] text-xs leading-relaxed ${c.role === 'user' ? 'btn-gradient text-white rounded-br-none shadow-md' : 'bg-slate-50 text-gray-700 rounded-bl-none border border-gray-100 shadow-sm'}`}>
@@ -293,7 +267,6 @@ const PatientDashboard: React.FC<PatientProps> = ({
         )}
       </div>
 
-      {/* Persistent Bottom Nav */}
       <nav className="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-white/95 backdrop-blur-md border-t border-pink-50 flex justify-around items-center pt-3 pb-8 px-4 tab-bar-shadow z-40">
         <TabButton active={view === 'home'} icon={<Home size={22}/>} label="Home" onClick={() => setView('home')} />
         <TabButton active={view === 'ai'} icon={<Camera size={22}/>} label="AI Scan" onClick={() => setView('ai')} />
@@ -302,7 +275,6 @@ const PatientDashboard: React.FC<PatientProps> = ({
         <TabButton active={view === 'chat'} icon={<MessageSquare size={22}/>} label="AI Chat" onClick={() => setView('chat')} />
       </nav>
 
-      {/* Overlays */}
       {showCart && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end">
           <div className="w-full bg-white rounded-t-[40px] p-8 max-h-[85vh] flex flex-col animate-slide-up shadow-2xl">
@@ -311,26 +283,24 @@ const PatientDashboard: React.FC<PatientProps> = ({
               <button onClick={() => setShowCart(false)} className="text-pink-500 bg-pink-50 p-2 rounded-full"><X size={20}/></button>
             </div>
             <div className="flex-1 overflow-y-auto space-y-4 mb-6">
-              {cart.length === 0 ? <div className="text-center py-20 text-gray-300 text-xs italic">Your clinical kit is empty.</div> : cart.map(item => (
+              {cart.map(item => (
                 <div key={item.product.id} className="flex gap-4 items-center bg-pink-50/30 p-4 rounded-3xl border border-pink-100">
-                  <img src={item.product.image} className="w-14 h-14 rounded-2xl object-cover shadow-sm border border-white" />
+                  <img src={item.product.image} className="w-14 h-14 rounded-2xl object-cover shadow-sm" />
                   <div className="flex-1">
                     <p className="text-xs font-black text-gray-800">{item.product.name}</p>
-                    <p className="text-[10px] text-pink-500 font-black uppercase tracking-tighter">${item.product.price} x {item.quantity}</p>
+                    <p className="text-[10px] text-pink-500 font-black">${item.product.price} x {item.quantity}</p>
                   </div>
                   <button onClick={() => removeFromCart(item.product.id)} className="text-pink-300 hover:text-pink-600 transition-colors"><X size={16} /></button>
                 </div>
               ))}
             </div>
-            <div className="space-y-4 bg-white p-2 border-t border-gray-50 pt-6">
-              <div className="flex justify-between items-center font-black text-lg">
-                <span className="text-gray-400 uppercase text-xs tracking-widest">Total Amount</span>
-                <span className="text-pink-500">${cartTotal}</span>
-              </div>
-              <button onClick={() => { alert('Order processed! Checking stock...'); setShowCart(false); }} className="w-full py-5 btn-gradient text-white rounded-[24px] font-black shadow-2xl shadow-pink-200 active:scale-95 transition-transform text-xs uppercase tracking-widest">
-                Confirm & Checkout
-              </button>
+            <div className="flex justify-between items-center font-black text-lg py-4 border-t border-gray-100">
+              <span className="text-gray-400 uppercase text-xs tracking-widest">Total Amount</span>
+              <span className="text-pink-500">${cartTotal}</span>
             </div>
+            <button onClick={() => { alert('Success!'); setShowCart(false); }} className="w-full py-5 btn-gradient text-white rounded-[24px] font-black shadow-xl shadow-pink-200 uppercase text-xs tracking-widest">
+              Confirm & Checkout
+            </button>
           </div>
         </div>
       )}
@@ -338,20 +308,11 @@ const PatientDashboard: React.FC<PatientProps> = ({
       {selectedProduct && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end">
           <div className="w-full bg-white rounded-t-[40px] p-8 max-h-[90vh] flex flex-col animate-slide-up">
-            <button onClick={() => setSelectedProduct(null)} className="self-end text-pink-500 bg-pink-50 p-2 rounded-full mb-2 shadow-sm"><X size={20}/></button>
+            <button onClick={() => setSelectedProduct(null)} className="self-end text-pink-500 bg-pink-50 p-2 rounded-full mb-2"><X size={20}/></button>
             <img src={selectedProduct.image} className="w-full h-64 object-cover rounded-[32px] mb-6 shadow-xl border-4 border-pink-50" />
             <h3 className="text-2xl font-serif text-gray-800">{selectedProduct.name}</h3>
             <p className="text-sm font-black text-pink-500 mb-4 uppercase tracking-tighter">${selectedProduct.price}</p>
-            <p className="text-xs text-gray-500 leading-relaxed mb-6 bg-slate-50 p-4 rounded-2xl italic">"{selectedProduct.description}"</p>
-            
-            <div className="border-t border-gray-100 pt-6 mb-8 flex justify-between items-center">
-              <div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">User Rating</h4>
-                <div className="flex gap-1 text-yellow-400"><Star fill="currentColor" size={12}/><Star fill="currentColor" size={12}/><Star fill="currentColor" size={12}/><Star fill="currentColor" size={12}/><Star fill="currentColor" size={12}/></div>
-              </div>
-              <button onClick={() => alert('Opening review form...')} className="text-[10px] font-black text-pink-500 uppercase tracking-widest border-b-2 border-pink-500 pb-0.5">Rate this product</button>
-            </div>
-
+            <p className="text-xs text-gray-500 leading-relaxed mb-6">{selectedProduct.description}</p>
             <button onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }} className="w-full py-5 btn-gradient text-white rounded-[24px] font-black shadow-xl shadow-pink-200 uppercase text-xs tracking-widest">Add To My Regimen</button>
           </div>
         </div>
